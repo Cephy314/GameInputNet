@@ -6,14 +6,15 @@ using System.Runtime.InteropServices;
 using GameInputDotNet.Interop.Delegates;
 using GameInputDotNet.Interop.Enums;
 using GameInputDotNet.Interop.Interfaces;
-using GameInputDotNet.Interop.Tests.Infrastructure;
+using GameInputDotNet.Tests.Infrastructure;
 using Xunit;
+using HeaderManifest = GameInputDotNet.Tests.Infrastructure.GameInputHeaderManifest;
 
-namespace GameInputDotNet.Interop.Tests;
+namespace GameInputDotNet.Tests.Interop;
 
-public static class GameInputCallbackCoverageTests
+public static class GameInputCallbackCoverage
 {
-    private static readonly GameInputHeaderManifest HeaderManifest = GameInputHeaderManifest.Load();
+    private static readonly HeaderManifest Manifest = HeaderManifest.Load();
 
     private static readonly IReadOnlyDictionary<string, Type> DelegateTypesByName =
         typeof(GameInputDeviceCallback).Assembly
@@ -24,7 +25,7 @@ public static class GameInputCallbackCoverageTests
     [Fact]
     public static void AllHeaderCallbacksHaveManagedDelegates()
     {
-        var expectedNames = HeaderManifest.CallbackTypedefs
+        var expectedNames = Manifest.CallbackTypedefs
             .Select(callback => callback.Name)
             .OrderBy(name => name, StringComparer.Ordinal)
             .ToArray();
@@ -75,7 +76,7 @@ public static class GameInputCallbackCoverageTests
 
     public static IEnumerable<object[]> GetCallbackDelegates()
     {
-        foreach (var callback in HeaderManifest.CallbackTypedefs)
+        foreach (var callback in Manifest.CallbackTypedefs)
         {
             var delegateType = DelegateTypesByName[callback.Name];
             yield return new object[] { delegateType, callback };

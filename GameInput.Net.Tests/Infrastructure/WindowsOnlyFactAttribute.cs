@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 
-namespace GameInputDotNet.Interop.Tests.Infrastructure;
+namespace GameInputDotNet.Tests.Infrastructure;
 
 internal sealed class WindowsOnlyFactAttribute : FactAttribute
 {

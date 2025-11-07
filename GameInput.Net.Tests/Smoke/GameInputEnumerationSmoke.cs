@@ -1,10 +1,12 @@
+using System;
 using System.Runtime.Versioning;
+using GameInputDotNet;
 using GameInputDotNet.Interop.Enums;
-using GameInputDotNet.Interop.Tests.Infrastructure;
+using GameInputDotNet.Tests.Infrastructure;
 
-namespace GameInputDotNet.Interop.Tests;
+namespace GameInputDotNet.Tests.Smoke;
 
-public sealed class GameInputEnumerationSmokeTests
+public sealed class GameInputEnumerationSmoke
 {
     [WindowsOnlyFact]
     [SupportedOSPlatform("windows")]

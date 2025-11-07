@@ -1,13 +1,14 @@
 using System;
 using System.Linq;
-using GameInputDotNet.Interop.Tests.Infrastructure;
+using GameInputDotNet.Tests.Infrastructure;
 using Xunit;
+using HeaderManifest = GameInputDotNet.Tests.Infrastructure.GameInputHeaderManifest;
 
-namespace GameInputDotNet.Interop.Tests;
+namespace GameInputDotNet.Tests.Interop;
 
-public sealed class GameInputHeaderManifestTests
+public sealed class GameInputHeaderManifestChecks
 {
-    private static readonly GameInputHeaderManifest Manifest = GameInputHeaderManifest.Load();
+    private static readonly HeaderManifest Manifest = HeaderManifest.Load();
 
     [Fact]
     public void CallbackTypedefsMatchHeader()

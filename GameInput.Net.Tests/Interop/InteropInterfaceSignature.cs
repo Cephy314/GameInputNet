@@ -4,14 +4,15 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using GameInputDotNet;
-using GameInputDotNet.Interop.Tests.Infrastructure;
+using GameInputDotNet.Tests.Infrastructure;
 using Xunit;
+using HeaderManifest = GameInputDotNet.Tests.Infrastructure.GameInputHeaderManifest;
 
-namespace GameInputDotNet.Interop.Tests;
+namespace GameInputDotNet.Tests.Interop;
 
-public sealed class InteropInterfaceSignatureTests
+public sealed class InteropInterfaceSignature
 {
-    private static readonly GameInputHeaderManifest HeaderManifest = GameInputHeaderManifest.Load();
+    private static readonly HeaderManifest Manifest = HeaderManifest.Load();
 
     private static readonly Assembly InteropAssembly = typeof(GameInputFactory).Assembly;
 
@@ -27,7 +28,7 @@ public sealed class InteropInterfaceSignatureTests
     {
         foreach (var interfaceType in InterfaceTypes)
         {
-            var headerInterface = HeaderManifest.FindInterface(interfaceType.Name);
+            var headerInterface = Manifest.FindInterface(interfaceType.Name);
 
             Assert.NotNull(interfaceType.GetCustomAttribute<ComImportAttribute>());
             var guidAttribute = interfaceType.GetCustomAttribute<GuidAttribute>();
@@ -85,7 +86,7 @@ public sealed class InteropInterfaceSignatureTests
     {
         foreach (var interfaceType in InterfaceTypes)
         {
-            var headerInterface = HeaderManifest.FindInterface(interfaceType.Name);
+            var headerInterface = Manifest.FindInterface(interfaceType.Name);
             var managedMethods = interfaceType.GetMethods();
             Assert.Equal(headerInterface.Methods.Count, managedMethods.Length);
 

@@ -5,14 +5,15 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using GameInputDotNet.Interop;
 using GameInputDotNet.Interop.Interfaces;
-using GameInputDotNet.Interop.Tests.Infrastructure;
+using GameInputDotNet.Tests.Infrastructure;
 using Xunit;
+using HeaderManifest = GameInputDotNet.Tests.Infrastructure.GameInputHeaderManifest;
 
-namespace GameInputDotNet.Interop.Tests;
+namespace GameInputDotNet.Tests.Interop;
 
-public sealed class GameInputNativeSignatureTests
+public sealed class GameInputNativeSignature
 {
-    private static readonly GameInputHeaderManifest HeaderManifest = GameInputHeaderManifest.Load();
+    private static readonly HeaderManifest Manifest = HeaderManifest.Load();
 
     private static readonly HashSet<string> IgnoredHeaderFunctions = new(StringComparer.Ordinal)
     {
@@ -30,7 +31,7 @@ public sealed class GameInputNativeSignatureTests
     [Fact]
     public void DllImportsCoverHeaderFunctions()
     {
-        var expectedNames = HeaderManifest.ExportedFunctions
+        var expectedNames = Manifest.ExportedFunctions
             .Select(function => function.Name)
             .Where(name => !IgnoredHeaderFunctions.Contains(name))
             .OrderBy(name => name, StringComparer.Ordinal)
@@ -75,7 +76,7 @@ public sealed class GameInputNativeSignatureTests
                 continue;
             }
 
-            var headerFunction = HeaderManifest.FindFunction(method.Name);
+            var headerFunction = Manifest.FindFunction(method.Name);
             yield return new object[] { method, headerFunction };
         }
     }

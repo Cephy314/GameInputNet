@@ -1,10 +1,13 @@
+using System;
+using System.Collections.Generic;
 using System.Runtime.Versioning;
+using GameInputDotNet;
 using GameInputDotNet.Interop.Enums;
-using GameInputDotNet.Interop.Tests.Infrastructure;
+using GameInputDotNet.Tests.Infrastructure;
 
-namespace GameInputDotNet.Interop.Tests;
+namespace GameInputDotNet.Tests.Smoke;
 
-public sealed class GameInputFindDeviceByPlatformStringSmokeTests
+public sealed class GameInputFindDeviceByPlatformStringSmoke
 {
     private static readonly IReadOnlyList<GameInputKind> ProbeKinds =
     [

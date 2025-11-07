@@ -5,9 +5,9 @@ using System.Runtime.InteropServices;
 using GameInputDotNet;
 using Xunit;
 
-namespace GameInputDotNet.Interop.Tests;
+namespace GameInputDotNet.Tests.Interop;
 
-public sealed class InteropStructLayoutTests
+public sealed class InteropStructLayout
 {
     private static readonly Assembly InteropAssembly = typeof(GameInputFactory).Assembly;
 

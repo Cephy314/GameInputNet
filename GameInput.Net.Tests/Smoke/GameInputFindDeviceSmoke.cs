@@ -4,12 +4,12 @@ using System.Linq;
 using System.Runtime.Versioning;
 using GameInputDotNet;
 using GameInputDotNet.Interop.Enums;
-using GameInputDotNet.Interop.Tests.Infrastructure;
+using GameInputDotNet.Tests.Infrastructure;
 using Xunit;
 
-namespace GameInputDotNet.Interop.Tests;
+namespace GameInputDotNet.Tests.Smoke;
 
-public sealed class GameInputFindDeviceSmokeTests
+public sealed class GameInputFindDeviceSmoke
 {
     private static readonly IReadOnlyList<GameInputKind> ProbeKinds =
     [

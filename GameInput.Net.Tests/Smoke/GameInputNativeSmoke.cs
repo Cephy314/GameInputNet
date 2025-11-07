@@ -3,13 +3,12 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using GameInputDotNet.Interop;
-using GameInputDotNet.Interop.Interfaces;
-using GameInputDotNet.Interop.Tests.Infrastructure;
+using GameInputDotNet.Tests.Infrastructure;
 using Xunit;
 
-namespace GameInputDotNet.Interop.Tests;
+namespace GameInputDotNet.Tests.Smoke;
 
-public sealed class GameInputNativeSmokeTests
+public sealed class GameInputNativeSmoke
 {
     [WindowsOnlyFact]
     [SupportedOSPlatform("windows")]

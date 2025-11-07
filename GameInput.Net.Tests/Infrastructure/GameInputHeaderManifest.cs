@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace GameInputDotNet.Interop.Tests.Infrastructure;
+namespace GameInputDotNet.Tests.Infrastructure;
 
 internal sealed class GameInputHeaderManifest
 {
@@ -67,7 +67,7 @@ internal sealed class GameInputHeaderManifest
 
     private static string ResolveHeaderPath()
     {
-        // Test binaries live under GameInput.Net.Interop.Tests/bin/<Configuration>/<TargetFramework>.
+        // Test binaries live under GameInput.Net.Tests/bin/<Configuration>/<TargetFramework>.
         var outputDirectory = AppContext.BaseDirectory;
         var projectRoot = Path.GetFullPath(Path.Combine(outputDirectory, "..", "..", ".."));
         var solutionRoot = Directory.GetParent(projectRoot)?.FullName
