@@ -1,5 +1,4 @@
 using System.Runtime.Versioning;
-using GameInputDotNet;
 using GameInputDotNet.Interop.Enums;
 using GameInputDotNet.Interop.Tests.Infrastructure;
 
@@ -12,11 +11,10 @@ public sealed class GameInputEnumerationSmokeTests
     public void EnumerateDevices_CompletesAndDisposes()
     {
         using var gameInput = GameInputFactory.Create();
-        var devices = gameInput.EnumerateDevices(GameInputKind.Controller);
+        var controllers = gameInput.EnumerateDevices(GameInputKind.Controller);
 
-        foreach (var device in devices)
-        {
-            device.Dispose();
-        }
+        Console.WriteLine($"Controllers count: {controllers.Count}");
+        foreach (var controller in controllers) controller.Dispose();
+        Console.WriteLine($"Disposed controllers: {controllers.Count}");
     }
 }
