@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using GameInputDotNet.Interop;
@@ -12,8 +13,18 @@ namespace GameInputDotNet;
 ///     Managed wrapper over the native <c>IGameInput</c> interface.
 /// </summary>
 [SupportedOSPlatform("windows")]
-public sealed class GameInput : IDisposable
+public sealed unsafe class GameInput : IDisposable
 {
+    public delegate void GameInputReadingHandler(GameInputReading reading);
+    public delegate void GameInputDeviceHandler(GameInputDevice device, ulong timestamp, GameInputDeviceStatus currentStatus, GameInputDeviceStatus previousStatus);
+    public delegate void GameInputSystemButtonHandler(GameInputDevice device, ulong timestamp, GameInputSystemButtons currentButtons, GameInputSystemButtons previousButtons);
+    public delegate void GameInputKeyboardLayoutHandler(GameInputDevice device, ulong timestamp, uint currentLayout, uint previousLayout);
+
+    private static readonly GameInputReadingCallback ReadingCallbackThunk = OnReadingCallback;
+    private static readonly GameInputDeviceCallback DeviceCallbackThunk = OnDeviceCallback;
+    private static readonly GameInputSystemButtonCallback SystemButtonCallbackThunk = OnSystemButtonCallback;
+    private static readonly GameInputKeyboardLayoutCallback KeyboardLayoutCallbackThunk = OnKeyboardLayoutCallback;
+
     private GameInputHandle? _handle;
 
     internal GameInput(GameInputHandle handle)
@@ -70,6 +81,173 @@ public sealed class GameInput : IDisposable
     }
 
     /// <summary>
+    ///     Returns the latest reading for the specified input kind.
+    /// </summary>
+    public GameInputReading? GetCurrentReading(GameInputKind inputKind, GameInputDevice? device = null)
+    {
+        var hr = NativeInterface.GetCurrentReading(inputKind, device?.NativeInterface, out var reading);
+        GameInputException.ThrowIfFailed(hr, "IGameInput.GetCurrentReading failed.");
+
+        return ConvertReadingFromNative(reading);
+    }
+
+    /// <summary>
+    ///     Returns the next reading relative to <paramref name="referenceReading"/>.
+    /// </summary>
+    public GameInputReading? GetNextReading(GameInputReading referenceReading, GameInputKind inputKind,
+        GameInputDevice? device = null)
+    {
+        ArgumentNullException.ThrowIfNull(referenceReading);
+
+        var hr = NativeInterface.GetNextReading(referenceReading.NativeInterface, inputKind,
+            device?.NativeInterface, out var reading);
+        GameInputException.ThrowIfFailed(hr, "IGameInput.GetNextReading failed.");
+
+        return ConvertReadingFromNative(reading);
+    }
+
+    /// <summary>
+    ///     Returns the previous reading relative to <paramref name="referenceReading"/>.
+    /// </summary>
+    public GameInputReading? GetPreviousReading(GameInputReading referenceReading, GameInputKind inputKind,
+        GameInputDevice? device = null)
+    {
+        ArgumentNullException.ThrowIfNull(referenceReading);
+
+        var hr = NativeInterface.GetPreviousReading(referenceReading.NativeInterface, inputKind,
+            device?.NativeInterface, out var reading);
+        GameInputException.ThrowIfFailed(hr, "IGameInput.GetPreviousReading failed.");
+
+        return ConvertReadingFromNative(reading);
+    }
+
+    public unsafe GameInputCallbackRegistration RegisterReadingCallback(GameInputDevice? device, GameInputKind inputKind, GameInputReadingHandler handler)
+    {
+        ArgumentNullException.ThrowIfNull(handler);
+
+        var context = GCHandle.Alloc(new ReadingCallbackContext(this, handler));
+        ulong token = 0;
+        try
+        {
+            var contextPtr = (void*)GCHandle.ToIntPtr(context);
+            var hr = NativeInterface.RegisterReadingCallback(device?.NativeInterface, inputKind, contextPtr, ReadingCallbackThunk, out token);
+            GameInputException.ThrowIfFailed(hr, "IGameInput.RegisterReadingCallback failed.");
+            return new GameInputCallbackRegistration(this, token, context);
+        }
+        catch
+        {
+            if (token != 0)
+            {
+                NativeInterface.StopCallback(token);
+                NativeInterface.UnregisterCallback(token);
+            }
+
+            if (context.IsAllocated) context.Free();
+            throw;
+        }
+        finally
+        {
+            GC.KeepAlive(device);
+        }
+    }
+
+    public unsafe GameInputCallbackRegistration RegisterDeviceCallback(GameInputDevice? device, GameInputKind inputKind,
+        GameInputDeviceStatus statusFilter, GameInputEnumerationKind enumerationKind, GameInputDeviceHandler handler)
+    {
+        ArgumentNullException.ThrowIfNull(handler);
+
+        var context = GCHandle.Alloc(new DeviceCallbackContext(this, handler));
+        ulong token = 0;
+        try
+        {
+            var contextPtr = (void*)GCHandle.ToIntPtr(context);
+            var hr = NativeInterface.RegisterDeviceCallback(device?.NativeInterface, inputKind, statusFilter, enumerationKind,
+                contextPtr, DeviceCallbackThunk, out token);
+            GameInputException.ThrowIfFailed(hr, "IGameInput.RegisterDeviceCallback failed.");
+            return new GameInputCallbackRegistration(this, token, context);
+        }
+        catch
+        {
+            if (token != 0)
+            {
+                NativeInterface.StopCallback(token);
+                NativeInterface.UnregisterCallback(token);
+            }
+
+            if (context.IsAllocated) context.Free();
+            throw;
+        }
+        finally
+        {
+            GC.KeepAlive(device);
+        }
+    }
+
+    public unsafe GameInputCallbackRegistration RegisterSystemButtonCallback(GameInputDevice? device,
+        GameInputSystemButtons buttonFilter, GameInputSystemButtonHandler handler)
+    {
+        ArgumentNullException.ThrowIfNull(handler);
+
+        var context = GCHandle.Alloc(new SystemButtonCallbackContext(this, handler));
+        ulong token = 0;
+        try
+        {
+            var contextPtr = (void*)GCHandle.ToIntPtr(context);
+            var hr = NativeInterface.RegisterSystemButtonCallback(device?.NativeInterface, buttonFilter, contextPtr,
+                SystemButtonCallbackThunk, out token);
+            GameInputException.ThrowIfFailed(hr, "IGameInput.RegisterSystemButtonCallback failed.");
+            return new GameInputCallbackRegistration(this, token, context);
+        }
+        catch
+        {
+            if (token != 0)
+            {
+                NativeInterface.StopCallback(token);
+                NativeInterface.UnregisterCallback(token);
+            }
+
+            if (context.IsAllocated) context.Free();
+            throw;
+        }
+        finally
+        {
+            GC.KeepAlive(device);
+        }
+    }
+
+    public unsafe GameInputCallbackRegistration RegisterKeyboardLayoutCallback(GameInputDevice? device,
+        GameInputKeyboardLayoutHandler handler)
+    {
+        ArgumentNullException.ThrowIfNull(handler);
+
+        var context = GCHandle.Alloc(new KeyboardLayoutCallbackContext(this, handler));
+        ulong token = 0;
+        try
+        {
+            var contextPtr = (void*)GCHandle.ToIntPtr(context);
+            var hr = NativeInterface.RegisterKeyboardLayoutCallback(device?.NativeInterface, contextPtr,
+                KeyboardLayoutCallbackThunk, out token);
+            GameInputException.ThrowIfFailed(hr, "IGameInput.RegisterKeyboardLayoutCallback failed.");
+            return new GameInputCallbackRegistration(this, token, context);
+        }
+        catch
+        {
+            if (token != 0)
+            {
+                NativeInterface.StopCallback(token);
+                NativeInterface.UnregisterCallback(token);
+            }
+
+            if (context.IsAllocated) context.Free();
+            throw;
+        }
+        finally
+        {
+            GC.KeepAlive(device);
+        }
+    }
+
+    /// <summary>
     ///     Retrieves a single device by its <see cref="AppLocalDeviceId" />.
     /// </summary>
     public GameInputDevice FindDeviceById(AppLocalDeviceId deviceId)
@@ -77,7 +255,7 @@ public sealed class GameInput : IDisposable
         var hr = NativeInterface.FindDeviceFromId(in deviceId, out var device);
         GameInputException.ThrowIfFailed(hr, "IGameInput.FindDeviceFromId failed.");
 
-        return ConvertGameInputDeviceFromNative(device, hr);
+        return ConvertDeviceFromNative(device, hr, "IGameInput.FindDeviceFromId returned a null interface.");
     }
 
     /// <summary>
@@ -95,7 +273,7 @@ public sealed class GameInput : IDisposable
         var hr = NativeInterface.FindDeviceFromPlatformString(platformString, out var device);
         GameInputException.ThrowIfFailed(hr, "IGameInput.FindDeviceFromPlatformString failed.");
 
-        return ConvertGameInputDeviceFromNative(device, hr);
+        return ConvertDeviceFromNative(device, hr, "IGameInput.FindDeviceFromPlatformString returned a null interface.");
     }
 
     /// <summary>
@@ -114,15 +292,155 @@ public sealed class GameInput : IDisposable
         return collector.ToArray();
     }
 
-    private GameInputDevice ConvertGameInputDeviceFromNative(IGameInputDevice device, int hresult)
+    private GameInputDevice ConvertDeviceFromNative(IGameInputDevice? device, int hresult, string failureMessage)
     {
         if (device is null)
-            throw new GameInputException("IGameInput.FindDeviceFromId returned a null interface.", hresult);
+            throw new GameInputException(failureMessage, hresult);
 
         var status = device.GetDeviceStatus();
         var timestamp = NativeInterface.GetCurrentTimestamp();
         var handle = GameInputDeviceHandle.FromInterface(device);
         return new GameInputDevice(handle, timestamp, status, status);
+    }
+
+    private static GameInputDevice WrapDevice(IGameInputDevice device, ulong timestamp, GameInputDeviceStatus currentStatus, GameInputDeviceStatus previousStatus)
+    {
+        var handle = GameInputDeviceHandle.FromInterface(device);
+        return new GameInputDevice(handle, timestamp, currentStatus, previousStatus);
+    }
+
+    private static GameInputReading? ConvertReadingFromNative(IGameInputReading? reading)
+    {
+        if (reading is null) return null;
+        var handle = GameInputReadingHandle.FromInterface(reading);
+        return new GameInputReading(handle);
+    }
+
+    private sealed class ReadingCallbackContext
+    {
+        public ReadingCallbackContext(GameInput owner, GameInputReadingHandler handler)
+        {
+            Owner = owner;
+            Handler = handler;
+        }
+
+        public GameInput Owner { get; }
+        public GameInputReadingHandler Handler { get; }
+    }
+
+    private sealed class DeviceCallbackContext
+    {
+        public DeviceCallbackContext(GameInput owner, GameInputDeviceHandler handler)
+        {
+            Owner = owner;
+            Handler = handler;
+        }
+
+        public GameInput Owner { get; }
+        public GameInputDeviceHandler Handler { get; }
+    }
+
+    private sealed class SystemButtonCallbackContext
+    {
+        public SystemButtonCallbackContext(GameInput owner, GameInputSystemButtonHandler handler)
+        {
+            Owner = owner;
+            Handler = handler;
+        }
+
+        public GameInput Owner { get; }
+        public GameInputSystemButtonHandler Handler { get; }
+    }
+
+    private sealed class KeyboardLayoutCallbackContext
+    {
+        public KeyboardLayoutCallbackContext(GameInput owner, GameInputKeyboardLayoutHandler handler)
+        {
+            Owner = owner;
+            Handler = handler;
+        }
+
+        public GameInput Owner { get; }
+        public GameInputKeyboardLayoutHandler Handler { get; }
+    }
+
+    private static unsafe void OnReadingCallback(ulong callbackToken, void* context, IGameInputReading reading)
+    {
+        var handle = GCHandle.FromIntPtr((nint)context);
+        if (handle.Target is not ReadingCallbackContext ctx)
+        {
+            return;
+        }
+
+        var managed = ConvertReadingFromNative(reading);
+        if (managed is null) return;
+
+        using (managed)
+        {
+            ctx.Handler(managed);
+        }
+    }
+
+    private static unsafe void OnDeviceCallback(ulong callbackToken, void* context, IGameInputDevice device,
+        ulong timestamp, GameInputDeviceStatus currentStatus, GameInputDeviceStatus previousStatus)
+    {
+        var handle = GCHandle.FromIntPtr((nint)context);
+        if (handle.Target is not DeviceCallbackContext ctx)
+        {
+            return;
+        }
+
+        var managedDevice = WrapDevice(device, timestamp, currentStatus, previousStatus);
+        try
+        {
+            ctx.Handler(managedDevice, timestamp, currentStatus, previousStatus);
+        }
+        finally
+        {
+            managedDevice.Dispose();
+        }
+    }
+
+    private static unsafe void OnSystemButtonCallback(ulong callbackToken, void* context, IGameInputDevice device,
+        ulong timestamp, GameInputSystemButtons currentButtons, GameInputSystemButtons previousButtons)
+    {
+        var handle = GCHandle.FromIntPtr((nint)context);
+        if (handle.Target is not SystemButtonCallbackContext ctx)
+        {
+            return;
+        }
+
+        var status = device.GetDeviceStatus();
+        var managedDevice = WrapDevice(device, timestamp, status, status);
+        try
+        {
+            ctx.Handler(managedDevice, timestamp, currentButtons, previousButtons);
+        }
+        finally
+        {
+            managedDevice.Dispose();
+        }
+    }
+
+    private static unsafe void OnKeyboardLayoutCallback(ulong callbackToken, void* context, IGameInputDevice device,
+        ulong timestamp, uint currentLayout, uint previousLayout)
+    {
+        var handle = GCHandle.FromIntPtr((nint)context);
+        if (handle.Target is not KeyboardLayoutCallbackContext ctx)
+        {
+            return;
+        }
+
+        var status = device.GetDeviceStatus();
+        var managedDevice = WrapDevice(device, timestamp, status, status);
+        try
+        {
+            ctx.Handler(managedDevice, timestamp, currentLayout, previousLayout);
+        }
+        finally
+        {
+            managedDevice.Dispose();
+        }
     }
 
     private sealed unsafe class DeviceEnumerationCollector : IDisposable
@@ -177,9 +495,47 @@ public sealed class GameInput : IDisposable
             var handle = GCHandle.FromIntPtr((nint)context);
             if (handle.Target is not DeviceEnumerationCollector collector) return;
 
-            var deviceHandle = GameInputDeviceHandle.FromInterface(device);
-            var wrapper = new GameInputDevice(deviceHandle, timestamp, currentStatus, previousStatus);
+            var wrapper = WrapDevice(device, timestamp, currentStatus, previousStatus);
             collector._devices.Add(wrapper);
+        }
+    }
+
+    public sealed class GameInputCallbackRegistration : IDisposable
+    {
+        private readonly GameInput _owner;
+        private readonly ulong _token;
+        private GCHandle _context;
+        private bool _disposed;
+
+        internal GameInputCallbackRegistration(GameInput owner, ulong token, GCHandle context)
+        {
+            _owner = owner;
+            _token = token;
+            _context = context;
+        }
+
+        public void Dispose()
+        {
+            if (_disposed) return;
+
+            if (_context.IsAllocated) _context.Free();
+
+            try
+            {
+                _owner.NativeInterface.StopCallback(_token);
+            }
+            finally
+            {
+                _owner.NativeInterface.UnregisterCallback(_token);
+            }
+
+            _disposed = true;
+            GC.SuppressFinalize(this);
+        }
+
+        ~GameInputCallbackRegistration()
+        {
+            Dispose();
         }
     }
 }
