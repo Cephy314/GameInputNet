@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+using GameInputDotNet.Interop;
 using GameInputDotNet.Interop.Delegates;
 using GameInputDotNet.Interop.Enums;
 using GameInputDotNet.Interop.Handles;
@@ -47,6 +47,26 @@ public sealed class GameInput : IDisposable
     public void SetFocusPolicy(GameInputFocusPolicy policy)
     {
         NativeInterface.SetFocusPolicy(policy);
+    }
+
+    /// <summary>
+    ///     Creates an aggregate device for the specified <paramref name="inputKind" /> and returns its identifier.
+    /// </summary>
+    public AppLocalDeviceId CreateAggregateDevice(GameInputKind inputKind)
+    {
+        var hr = NativeInterface.CreateAggregateDevice(inputKind, out var deviceId);
+        GameInputException.ThrowIfFailed(hr, "IGameInput.CreateAggregateDevice failed.");
+
+        return deviceId;
+    }
+
+    /// <summary>
+    ///     Disables a previously created aggregate device.
+    /// </summary>
+    public void DisableAggregateDevice(AppLocalDeviceId deviceId)
+    {
+        var hr = NativeInterface.DisableAggregateDevice(deviceId);
+        GameInputException.ThrowIfFailed(hr, "IGameInput.DisableAggregateDevice failed.");
     }
 
     /// <summary>

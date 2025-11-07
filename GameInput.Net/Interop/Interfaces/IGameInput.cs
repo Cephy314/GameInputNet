@@ -65,8 +65,8 @@ public interface IGameInput
     void SetFocusPolicy(GameInputFocusPolicy policy);
 
     [PreserveSig]
-    unsafe int CreateAggregateDevice(GameInputKind inputKind, AppLocalDeviceId* deviceId);
+    int CreateAggregateDevice(GameInputKind inputKind, out AppLocalDeviceId deviceId);
 
     [PreserveSig]
-    unsafe int DisableAggregateDevice(AppLocalDeviceId* deviceId);
+    int DisableAggregateDevice(in AppLocalDeviceId deviceId);
 }
