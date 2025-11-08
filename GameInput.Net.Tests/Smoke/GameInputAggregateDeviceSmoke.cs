@@ -43,8 +43,8 @@ public sealed class GameInputAggregateDeviceSmoke
 
     private static bool IsAggregateUnsupported(GameInputException ex)
     {
-        return ex.ErrorCode is unchecked((int)0x838A000B) // GAMEINPUT_E_AGGREGATE_OPERATION_NOT_SUPPORTED
-            or unchecked((int)0x80004001);
+        return ex.Error is GameInputErrorCode.AggregateOperationNotSupported
+            || ex.ErrorCode == unchecked((int)0x80004001);
         // E_NOTIMPL on older redistributables
     }
 }
