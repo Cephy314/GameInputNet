@@ -8,7 +8,9 @@ public struct GameInputKeyState
 {
     public uint ScanCode;
     public uint CodePoint;
-    public byte VirtualKey;
+    internal GameInputBoolean _virtualKey;
+    internal GameInputBoolean _isDeadKey;
 
-    public GameInputBoolean IsDeadKey;
+    public bool IsDeadKey => _isDeadKey.Value;
+    public bool IsVirtualKey => _virtualKey.Value;
 }
