@@ -433,6 +433,7 @@ FodyWeavers.xsd
 *.msm
 *.msp
 *.md
+!/*/**/*.md
 !README.md
 
 *.backup
