@@ -28,10 +28,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-
-    </ItemGroup>
-
-    <ItemGroup>
         <None Include="README.md" pack="true" PackagePath="."/>
     </ItemGroup>
 

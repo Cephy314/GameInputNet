@@ -1,48 +1,70 @@
-![Static Badge](https://img.shields.io/badge/Language-C%23-blue)
-![Static Badge](https://img.shields.io/badge/.NET-9.0-red)
-![GitHub License](https://img.shields.io/github/license/Cephy314/GameInputNet)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/w/Cephy314/GameInputNet?style=flat)
-![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/Cephy314/GameInputNet/total?style=flat)
-![GitHub Release](https://img.shields.io/github/v/release/Cephy314/GameInputNet)
+# About
+GameInput.Net is a [**.NET**](https://dotnet.microsoft.com/en-us/) wrapper around Microsoft's [**GameInput**](https://learn.microsoft.com/en-us/gaming/gdk/docs/features/common/input/overviews/input-overview) library, a modern input capture system introduced woth the Microsoft [**Game Development Kit**](https://learn.microsoft.com/en-us/gaming/gdk/).
 
+# Prerequisites
+You must have Windows 10 or 11 with the GameInput library installed.  It is recommended you distribute the GameInput Redistributable with your software to ensure the user has the most recent version.  GameInput.Net will look for the re-distributable before the boxed version.
 
+This is included in the [**Microsoft.GameInput**](https://www.nuget.org/packages/Microsoft.GameInput) package, though not automatically installed.
 
-
-# GameInput.Net
-
-GameInput.Net is a managed wrapper for Microsoft.GameInput distributed with windows or via Microsoft GameInput Redistributable.
-
-## Installation
-- Use the NuGet package manager to install GameInput.Net in your favorite IDE.
-- Commandline:
+# How to Use
+Download the package in your favorite IDE such as [**Jetbrains Rider**](https://www.jetbrains.com/rider/) or [**Microsoft Visual Studio**](https://visualstudio.microsoft.com/) using the NuGet package manager.  You may also install via commandline dotnet tools.  
 ```
-dotnet add package GameInput.Net
+dotnet add package GameInputNet
 ```
 
-## Usage
-You can find examples of usage in the Examples folder of the repository.
+Compatible with [**.NET**](https://dotnet.microsoft.com/en-us/) 6.0+ you can instantiate a GameInput object and access all of the native [**GameInput**](https://learn.microsoft.com/en-us/gaming/gdk/docs/features/common/input/overviews/input-overview) through the managed wrapper.
 
-```c#
-import GameInputDotNet;
+```C#
+using GameInputDotNet;
+using GameInputDotNet.Interop.Enums;
 
-Main()
+using var _gameInput = GameInput.Create();
+
+// Set focus allow capture of inputs regardless of program focus.
+_gameInput.SetFocusPolicy(GameInputFocusPolicy.EnableBackgroundInput);
+
+while (true)
 {
-  var _gameInput = GameInputDotNet.DoSomething;
+    // Slow down the loop so we don't get spammed.
+    Thread.Sleep(100);
+    GameInputReading? reading = null;
+
+    try
+    {
+        // Get the current frame's "Keyboard" inputs.
+        reading = _gameInput.GetCurrentReading(GameInputKind.Keyboard);
+    }
+    catch (GameInputException)
+    {
+        // Handle exceptions and unprepared reading from first frame.
+        continue;
+    }
+
+    if (reading is null) continue;
+
+    using (reading)
+    {
+        // Get the current state. 
+        var state = reading.GetKeyboardState();
+
+        // Nothing pressed we can jump to the next loop.
+        if (state.Keys.Count == 0)
+            continue;
+
+        // Report the scan code of each key currently pressed.
+        Console.Write("Keys Pressed: ");
+        foreach (var key in state.Keys) Console.Write(key.ScanCode + " ");
+        Console.WriteLine();
+
+        // We can also use this to end our program when the user hits Escape.
+        if (state.Keys.Any(key => key.ScanCode == 1))
+        {
+            Console.WriteLine("Got ESCAPE key, ending program.");
+            break;
+        }
+    }
 }
 ```
 
-## Contributing
-
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-Please make sure to update tests as appropriate.
-
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
-
-## Authors and Acknowledgement
-- Project created by Victoria Beauray Sagady([Cephy314](https://github.com/Cephy314/))
-
-## Project Status
-This project is currently in very early development and will require testing and optimizing.  Contribution and help is welcome!
+# Documentation & Feedback
+If you have issues or recommendations please submit a ticket through the [**GameInput.Net GitHub**](https://github.com/Cephy314/GameInputNet). The repo also contains additional documentation and examples.
