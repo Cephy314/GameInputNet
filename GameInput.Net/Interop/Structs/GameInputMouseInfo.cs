@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using GameInputDotNet.Interop.Enums;
+using GameInputDotNet.Interop.Primitives;
 
 namespace GameInputDotNet.Interop.Structs;
 
@@ -9,7 +10,7 @@ public struct GameInputMouseInfo
     public GameInputMouseButtons SupportedButtons;
     public uint SampleRate;
 
-    [MarshalAs(UnmanagedType.I1)] public bool HasWheelX;
+    public GameInputBoolean HasWheelX;
 
-    [MarshalAs(UnmanagedType.I1)] public bool HasWheelY;
+    public GameInputBoolean HasWheelY;
 }

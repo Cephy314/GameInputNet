@@ -12,14 +12,14 @@ namespace GameInputDotNet.Tests.Smoke;
 
 public sealed class GameInputFindDeviceByPlatformStringSmoke
 {
-    private static readonly IReadOnlyList<GameInputKind> ProbeKinds =
-    [
+    private static readonly IReadOnlyList<GameInputKind> ProbeKinds = new[]
+    {
         GameInputKind.Controller,
         GameInputKind.Gamepad,
         GameInputKind.Keyboard,
         GameInputKind.Mouse,
         GameInputKind.Sensors
-    ];
+    };
 
     [WindowsOnlySkippableFact]
     [SupportedOSPlatform("windows")]

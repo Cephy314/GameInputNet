@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using GameInputDotNet.Interop.Enums;
+using GameInputDotNet.Interop.Primitives;
 
 namespace GameInputDotNet.Interop.Structs;
 
@@ -8,25 +9,25 @@ public struct GameInputForceFeedbackMotorInfo
 {
     public GameInputFeedbackAxes SupportedAxes;
 
-    [MarshalAs(UnmanagedType.I1)] public bool IsConstantEffectSupported;
+    public GameInputBoolean IsConstantEffectSupported;
 
-    [MarshalAs(UnmanagedType.I1)] public bool IsRampEffectSupported;
+    public GameInputBoolean IsRampEffectSupported;
 
-    [MarshalAs(UnmanagedType.I1)] public bool IsSineWaveEffectSupported;
+    public GameInputBoolean IsSineWaveEffectSupported;
 
-    [MarshalAs(UnmanagedType.I1)] public bool IsSquareWaveEffectSupported;
+    public GameInputBoolean IsSquareWaveEffectSupported;
 
-    [MarshalAs(UnmanagedType.I1)] public bool IsTriangleWaveEffectSupported;
+    public GameInputBoolean IsTriangleWaveEffectSupported;
 
-    [MarshalAs(UnmanagedType.I1)] public bool IsSawtoothUpWaveEffectSupported;
+    public GameInputBoolean IsSawtoothUpWaveEffectSupported;
 
-    [MarshalAs(UnmanagedType.I1)] public bool IsSawtoothDownWaveEffectSupported;
+    public GameInputBoolean IsSawtoothDownWaveEffectSupported;
 
-    [MarshalAs(UnmanagedType.I1)] public bool IsSpringEffectSupported;
+    public GameInputBoolean IsSpringEffectSupported;
 
-    [MarshalAs(UnmanagedType.I1)] public bool IsFrictionEffectSupported;
+    public GameInputBoolean IsFrictionEffectSupported;
 
-    [MarshalAs(UnmanagedType.I1)] public bool IsDamperEffectSupported;
+    public GameInputBoolean IsDamperEffectSupported;
 
-    [MarshalAs(UnmanagedType.I1)] public bool IsInertiaEffectSupported;
+    public GameInputBoolean IsInertiaEffectSupported;
 }

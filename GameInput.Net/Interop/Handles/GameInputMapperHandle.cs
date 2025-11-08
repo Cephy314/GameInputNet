@@ -33,7 +33,10 @@ internal sealed class GameInputMapperHandle : SafeHandleZeroOrMinusOneIsInvalid
 
     public IGameInputMapper GetInterface()
     {
-        ObjectDisposedException.ThrowIf(handle == IntPtr.Zero, "GameInputMapperHandle object can not be disposed.");
+        if (handle == IntPtr.Zero)
+        {
+            throw new ObjectDisposedException(nameof(GameInputMapperHandle), "GameInputMapperHandle object can not be disposed.");
+        }
 
         return _mapper ??= (IGameInputMapper)Marshal.GetObjectForIUnknown(handle);
     }

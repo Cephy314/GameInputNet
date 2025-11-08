@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using GameInputDotNet.Interop.Enums;
+using GameInputDotNet.Interop.Primitives;
 
 namespace GameInputDotNet.Interop.Structs;
 
@@ -9,9 +10,9 @@ public struct GameInputAxisMapping
     public GameInputElementKind ControllerElementKind;
     public uint ControllerIndex;
 
-    [MarshalAs(UnmanagedType.I1)] public bool IsInverted;
+    public GameInputBoolean IsInverted;
 
-    [MarshalAs(UnmanagedType.I1)] public bool FromTwoButtons;
+    public GameInputBoolean FromTwoButtons;
 
     public uint ButtonMinIndexValue;
     public GameInputSwitchPosition ReferenceDirection;

@@ -39,33 +39,83 @@ namespace GameInputDotNet.Interop
 
 namespace GameInputDotNet
 {
-    public sealed class GameInputReadingNotFoundException(string message, int hresult)
-        : GameInputException(message, hresult);
+    public sealed class GameInputReadingNotFoundException : GameInputException
+    {
+        public GameInputReadingNotFoundException(string message, int hresult)
+            : base(message, hresult)
+        {
+        }
+    }
 
-    public sealed class GameInputDeviceNotConnectedException(string message, int hresult)
-        : GameInputException(message, hresult);
+    public sealed class GameInputDeviceNotConnectedException : GameInputException
+    {
+        public GameInputDeviceNotConnectedException(string message, int hresult)
+            : base(message, hresult)
+        {
+        }
+    }
 
-    public sealed class GameInputDeviceNotFoundException(string message, int hresult)
-        : GameInputException(message, hresult);
+    public sealed class GameInputDeviceNotFoundException : GameInputException
+    {
+        public GameInputDeviceNotFoundException(string message, int hresult)
+            : base(message, hresult)
+        {
+        }
+    }
 
-    public sealed class GameInputReferenceReadingTooOldException(string message, int hresult)
-        : GameInputException(message, hresult);
+    public sealed class GameInputReferenceReadingTooOldException : GameInputException
+    {
+        public GameInputReferenceReadingTooOldException(string message, int hresult)
+            : base(message, hresult)
+        {
+        }
+    }
 
-    public sealed class GameInputFeedbackNotSupportedException(string message, int hresult)
-        : GameInputException(message, hresult);
+    public sealed class GameInputFeedbackNotSupportedException : GameInputException
+    {
+        public GameInputFeedbackNotSupportedException(string message, int hresult)
+            : base(message, hresult)
+        {
+        }
+    }
 
-    public sealed class GameInputObjectNoLongerExistsException(string message, int hresult)
-        : GameInputException(message, hresult);
+    public sealed class GameInputObjectNoLongerExistsException : GameInputException
+    {
+        public GameInputObjectNoLongerExistsException(string message, int hresult)
+            : base(message, hresult)
+        {
+        }
+    }
 
-    public sealed class GameInputCallbackNotFoundException(string message, int hresult)
-        : GameInputException(message, hresult);
+    public sealed class GameInputCallbackNotFoundException : GameInputException
+    {
+        public GameInputCallbackNotFoundException(string message, int hresult)
+            : base(message, hresult)
+        {
+        }
+    }
 
-    public sealed class GameInputHapticInfoNotFoundException(string message, int hresult)
-        : GameInputException(message, hresult);
+    public sealed class GameInputHapticInfoNotFoundException : GameInputException
+    {
+        public GameInputHapticInfoNotFoundException(string message, int hresult)
+            : base(message, hresult)
+        {
+        }
+    }
 
-    public sealed class GameInputAggregateOperationNotSupportedException(string message, int hresult)
-        : GameInputException(message, hresult);
+    public sealed class GameInputAggregateOperationNotSupportedException : GameInputException
+    {
+        public GameInputAggregateOperationNotSupportedException(string message, int hresult)
+            : base(message, hresult)
+        {
+        }
+    }
 
-    public sealed class GameInputInputKindNotPresentException(string message, int hresult)
-        : GameInputException(message, hresult);
+    public sealed class GameInputInputKindNotPresentException : GameInputException
+    {
+        public GameInputInputKindNotPresentException(string message, int hresult)
+            : base(message, hresult)
+        {
+        }
+    }
 }

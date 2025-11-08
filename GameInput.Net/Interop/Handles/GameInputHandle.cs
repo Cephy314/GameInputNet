@@ -35,7 +35,10 @@ internal sealed class GameInputHandle : SafeHandleZeroOrMinusOneIsInvalid
 
     public IGameInput GetInterface()
     {
-        ObjectDisposedException.ThrowIf(handle == IntPtr.Zero, "GameInputHandle object can not be disposed.");
+        if (handle == IntPtr.Zero)
+        {
+            throw new ObjectDisposedException(nameof(GameInputHandle), "GameInputHandle object can not be disposed.");
+        }
 
         return _gameInput ??= (IGameInput)Marshal.GetObjectForIUnknown(handle);
     }

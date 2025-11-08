@@ -5,7 +5,7 @@ namespace GameInputDotNet.Interop.Structs;
 [StructLayout(LayoutKind.Sequential)]
 public unsafe partial struct GameInputHapticInfo
 {
-    private fixed char _audioEndpointId[Constants.GAMEINPUT_HAPTIC_MAX_AUDIO_ENDPOINT_ID_SIZE];
+    private fixed ushort _audioEndpointId[Constants.GAMEINPUT_HAPTIC_MAX_AUDIO_ENDPOINT_ID_SIZE];
     public uint LocationCount;
     private fixed byte _locations[Constants.GAMEINPUT_HAPTIC_MAX_LOCATIONS * 16];
 }
@@ -16,7 +16,7 @@ public partial struct GameInputHapticInfo
     {
         unsafe
         {
-            fixed (char* ptr = _audioEndpointId)
+            fixed (ushort* ptr = _audioEndpointId)
             {
                 return Marshal.PtrToStringUni((nint)ptr) ?? string.Empty;
             }
@@ -32,10 +32,12 @@ public partial struct GameInputHapticInfo
 
         unsafe
         {
-            fixed (char* ptr = _audioEndpointId)
+            fixed (ushort* ptr = _audioEndpointId)
             {
-                value.CopyTo(new Span<char>(ptr, Constants.GAMEINPUT_HAPTIC_MAX_AUDIO_ENDPOINT_ID_SIZE));
-                ptr[value.Length] = '\0';
+                var charPtr = (char*)ptr;
+                var buffer = new Span<char>(charPtr, Constants.GAMEINPUT_HAPTIC_MAX_AUDIO_ENDPOINT_ID_SIZE);
+                value.CopyTo(buffer);
+                buffer[value.Length] = '\0';
             }
         }
     }
@@ -57,7 +59,11 @@ public partial struct GameInputHapticInfo
 
     public void SetLocation(int index, Guid value)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative(index);
+        if (index < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index));
+        }
+
         if (index >= Constants.GAMEINPUT_HAPTIC_MAX_LOCATIONS) throw new ArgumentOutOfRangeException(nameof(index));
 
         unsafe

@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using GameInputDotNet.Interop.Enums;
+using GameInputDotNet.Interop.Primitives;
 
 namespace GameInputDotNet.Interop.Structs;
 
@@ -21,17 +22,15 @@ public struct GameInputRacingWheelInfo
     public GameInputLabel LeftThumbstickButtonLabel;
     public GameInputLabel RightThumbstickButtonLabel;
 
-    [MarshalAs(UnmanagedType.I1)] public bool HasClutch;
+    public GameInputBoolean HasClutch;
 
-    [MarshalAs(UnmanagedType.I1)] public bool HasHandbrake;
+    public GameInputBoolean HasHandbrake;
 
-    [MarshalAs(UnmanagedType.I1)] public bool HasPatternShifter;
+    public GameInputBoolean HasPatternShifter;
 
-    [MarshalAs(UnmanagedType.I1)] public bool HasPatternShifterGear;
+    public int MinPatternShifterGear;
 
-    [MarshalAs(UnmanagedType.I1)] public bool MinPatternShifterGear;
-
-    [MarshalAs(UnmanagedType.I1)] public bool MaxPatternShifterGear;
+    public int MaxPatternShifterGear;
 
     public float MaxWheelAngle;
     public uint extraButtonCount;

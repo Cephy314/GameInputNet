@@ -33,7 +33,10 @@ internal sealed class GameInputDispatcherHandle : SafeHandleZeroOrMinusOneIsInva
 
     public IGameInputDispatcher GetInterface()
     {
-        ObjectDisposedException.ThrowIf(handle == IntPtr.Zero, "GameInputDispatcherHandle object can not be disposed.");
+        if (handle == IntPtr.Zero)
+        {
+            throw new ObjectDisposedException(nameof(GameInputDispatcherHandle), "GameInputDispatcherHandle object can not be disposed.");
+        }
 
         return _dispatcher ??= (IGameInputDispatcher)Marshal.GetObjectForIUnknown(handle);
     }

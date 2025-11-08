@@ -29,7 +29,10 @@ internal sealed class GameInputRawDeviceReportHandle : SafeHandleZeroOrMinusOneI
 
     public IGameInputRawDeviceReport GetInterface()
     {
-        ObjectDisposedException.ThrowIf(handle == IntPtr.Zero, "GameInputRawDeviceReportHandle object can not be disposed.");
+        if (handle == IntPtr.Zero)
+        {
+            throw new ObjectDisposedException(nameof(GameInputRawDeviceReportHandle), "GameInputRawDeviceReportHandle object can not be disposed.");
+        }
         return _report ??= (IGameInputRawDeviceReport)Marshal.GetObjectForIUnknown(handle);
     }
 

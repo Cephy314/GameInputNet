@@ -12,13 +12,13 @@ namespace GameInputDotNet.Tests.Smoke;
 public sealed class GameInputDeviceHelpersSmoke
 {
     private static readonly GameInputKind[] ProbeKinds =
-    [
+    {
         GameInputKind.Controller,
         GameInputKind.Gamepad,
         GameInputKind.RacingWheel,
         GameInputKind.FlightStick,
         GameInputKind.ArcadeStick
-    ];
+    };
 
     [WindowsOnlySkippableFact]
     [SupportedOSPlatform("windows")]

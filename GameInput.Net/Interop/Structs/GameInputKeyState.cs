@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using GameInputDotNet.Interop.Primitives;
 
 namespace GameInputDotNet.Interop.Structs;
 
@@ -9,5 +10,5 @@ public struct GameInputKeyState
     public uint CodePoint;
     public byte VirtualKey;
 
-    [MarshalAs(UnmanagedType.I1)] public bool IsDeadKey;
+    public GameInputBoolean IsDeadKey;
 }

@@ -35,7 +35,10 @@ internal sealed class GameInputForceFeedbackEffectHandle : SafeHandleZeroOrMinus
 
     public IGameInputForceFeedbackEffect GetInterface()
     {
-        ObjectDisposedException.ThrowIf(handle == IntPtr.Zero, "GameInputForceFeedbackEffectHandle object can not be disposed.");
+        if (handle == IntPtr.Zero)
+        {
+            throw new ObjectDisposedException(nameof(GameInputForceFeedbackEffectHandle), "GameInputForceFeedbackEffectHandle object can not be disposed.");
+        }
 
         return _effect ??= (IGameInputForceFeedbackEffect)Marshal.GetObjectForIUnknown(handle);
     }
