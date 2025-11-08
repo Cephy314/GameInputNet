@@ -11,15 +11,15 @@ namespace GameInputDotNet.Tests.Smoke;
 
 public sealed class GameInputDispatcherMapperSmoke
 {
-    [WindowsOnlyFact]
+    [WindowsOnlySkippableFact]
     [SupportedOSPlatform("windows")]
     public void Dispatcher_CreateDispatchAndOpenHandle()
     {
         using var gameInput = GameInputFactory.Create();
 
         using var dispatcher = gameInput.CreateDispatcher();
-        var pending = dispatcher.Dispatch(TimeSpan.Zero);
-        _ = dispatcher.Dispatch(0);
+        dispatcher.Dispatch(TimeSpan.Zero);
+        dispatcher.Dispatch(0);
 
         try
         {
@@ -32,11 +32,12 @@ public sealed class GameInputDispatcherMapperSmoke
         }
     }
 
-    [WindowsOnlyFact]
+    [WindowsOnlySkippableFact]
     [SupportedOSPlatform("windows")]
     public void DeviceMapper_CreateAndQueryMappings()
     {
         using var gameInput = GameInputFactory.Create();
+        var exercised = false;
 
         foreach (var kind in new[]
                  {
@@ -67,13 +68,25 @@ public sealed class GameInputDispatcherMapperSmoke
                     mapper.TryGetFlightStickButtonMapping(GameInputFlightStickButtons.FirePrimary, out _);
                     mapper.TryGetRacingWheelAxisMapping(GameInputRacingWheelAxes.Throttle, out _);
                     mapper.TryGetRacingWheelButtonMapping(GameInputRacingWheelButtons.A, out _);
-                    return;
+                    exercised = true;
+                    break;
                 }
                 catch (GameInputException ex) when (IsMapperUnsupported(ex))
                 {
                     continue;
                 }
             }
+
+            if (exercised)
+            {
+                break;
+            }
+        }
+
+        if (!exercised)
+        {
+            Console.WriteLine("Skipping input mapper smoke: no mapping metadata exposed by devices.");
+            Skip.If(true, "Input mapper helpers were not exercised. Connect hardware that exposes mapping metadata.");
         }
     }
 

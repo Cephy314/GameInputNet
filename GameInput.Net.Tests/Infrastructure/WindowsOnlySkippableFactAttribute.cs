@@ -1,11 +1,12 @@
 using System;
 using Xunit;
+using Xunit.Sdk;
 
 namespace GameInputDotNet.Tests.Infrastructure;
 
-internal sealed class WindowsOnlyFactAttribute : FactAttribute
+internal sealed class WindowsOnlySkippableFactAttribute : SkippableFactAttribute
 {
-    public WindowsOnlyFactAttribute()
+    public WindowsOnlySkippableFactAttribute()
     {
         if (!OperatingSystem.IsWindows())
         {

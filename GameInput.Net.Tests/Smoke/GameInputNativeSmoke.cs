@@ -10,7 +10,7 @@ namespace GameInputDotNet.Tests.Smoke;
 
 public sealed class GameInputNativeSmoke
 {
-    [WindowsOnlyFact]
+    [WindowsOnlySkippableFact]
     [SupportedOSPlatform("windows")]
     public void GameInputLibraryIsAvailable()
     {
@@ -31,7 +31,7 @@ public sealed class GameInputNativeSmoke
         Assert.Fail("Neither GameInputRedist.dll nor GameInput.dll could be loaded. Install the Microsoft GameInput redistributable or ensure the OS-provided GameInput is present.");
     }
 
-    [WindowsOnlyFact]
+    [WindowsOnlySkippableFact]
     [SupportedOSPlatform("windows")]
     public void GameInputCreateReturnsSuccessAndReleasesInterface()
     {

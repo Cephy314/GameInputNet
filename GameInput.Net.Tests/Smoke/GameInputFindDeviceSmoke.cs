@@ -20,11 +20,12 @@ public sealed class GameInputFindDeviceSmoke
         GameInputKind.Sensors
     ];
 
-    [WindowsOnlyFact]
+    [WindowsOnlySkippableFact]
     [SupportedOSPlatform("windows")]
     public void FindDeviceById_RoundTripsExistingDevice()
     {
         using var gameInput = GameInputFactory.Create();
+        var exercised = false;
 
         foreach (var kind in ProbeKinds)
         {
@@ -45,6 +46,8 @@ public sealed class GameInputFindDeviceSmoke
 
                 Assert.True(info.DeviceId.AsSpan().SequenceEqual(foundInfo.DeviceId.AsSpan()),
                     "Device identifiers should match when round-tripping through FindDeviceById.");
+                exercised = true;
+                break;
             }
             catch (GameInputException ex) when (ex.ErrorCode == unchecked((int)0x80004001))
             {
@@ -58,8 +61,12 @@ public sealed class GameInputFindDeviceSmoke
                     device.Dispose();
                 }
             }
+        }
 
-            return;
+        if (!exercised)
+        {
+            Console.WriteLine("Skipping FindDeviceById smoke: no compatible devices were round-tripped.");
+            Skip.If(true, "FindDeviceById did not round-trip any devices. Ensure compatible hardware is connected or that the redistributable supports the requested kinds.");
         }
     }
 }

@@ -11,12 +11,28 @@
         <Title>GameInput.Net</Title>
         <Authors>Victoria Beauray Sagady</Authors>
         <Description>Managed wrapper around Microsoft.GameInput v3.0 for Windows 10 &amp; 11.</Description>
+        <Copyright>Copyright 2025 Victoria Beauray Sagady</Copyright>
+        <PackageProjectUrl>https://github.com/Cephy314/GameInputNet</PackageProjectUrl>
+        <PackageLicense>MIT</PackageLicense>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryType>Git</RepositoryType>
+        <RepositoryUrl>https://github.com/Cephy314/GameInputNet</RepositoryUrl>
+        <PackageTags>GameInput Input GDK Joystick Gamepad Keyboard RacingWheel Haptic ForceFeedback</PackageTags>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <OutputPath>Lib\</OutputPath>
+        <PlatformTarget>x64</PlatformTarget>
+        <DocumentationFile>Lib\GameInput.Net.xml</DocumentationFile>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="..\runtime\win-x64\native\">
-        <Link>runtimes\win-x64\native</Link>
-      </Folder>
+
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="README.md" pack="true" PackagePath="."/>
     </ItemGroup>
 
 </Project>

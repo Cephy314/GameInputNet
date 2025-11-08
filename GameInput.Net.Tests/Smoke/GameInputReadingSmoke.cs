@@ -22,7 +22,7 @@ public sealed class GameInputReadingSmoke
         GameInputKind.RacingWheel
     ];
 
-    [WindowsOnlyFact]
+    [WindowsOnlySkippableFact]
     [SupportedOSPlatform("windows")]
     public void CurrentReading_AllowsSnapshotAccess()
     {
@@ -88,10 +88,14 @@ public sealed class GameInputReadingSmoke
             }
         }
 
-        if (!exercised) return;
+        if (!exercised)
+        {
+            Console.WriteLine("Skipping reading snapshot smoke: no readings returned for probed kinds.");
+            Skip.If(true, "GameInput.GetCurrentReading returned no usable snapshots. Connect hardware that produces readings for at least one probed kind.");
+        }
     }
 
-    [WindowsOnlyFact]
+    [WindowsOnlySkippableFact]
     [SupportedOSPlatform("windows")]
     public void ReadingTraversal_PreviousAndNextDoNotThrow()
     {
@@ -147,10 +151,14 @@ public sealed class GameInputReadingSmoke
             }
         }
 
-        if (!exercised) return;
+        if (!exercised)
+        {
+            Console.WriteLine("Skipping reading traversal smoke: no readings available to traverse.");
+            Skip.If(true, "Reading traversal could not be exercised. Ensure at least one reading is available to walk via GetNextReading/GetPreviousReading.");
+        }
     }
 
-    [WindowsOnlyFact]
+    [WindowsOnlySkippableFact]
     [SupportedOSPlatform("windows")]
     public void ReadingCallbacks_RegisterAndDispose()
     {

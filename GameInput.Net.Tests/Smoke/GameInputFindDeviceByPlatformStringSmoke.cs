@@ -1,9 +1,12 @@
 using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Versioning;
 using GameInputDotNet;
 using GameInputDotNet.Interop.Enums;
 using GameInputDotNet.Tests.Infrastructure;
+using Xunit;
 
 namespace GameInputDotNet.Tests.Smoke;
 
@@ -18,13 +21,13 @@ public sealed class GameInputFindDeviceByPlatformStringSmoke
         GameInputKind.Sensors
     ];
 
-    [WindowsOnlyFact]
+    [WindowsOnlySkippableFact]
     [SupportedOSPlatform("windows")]
     public void FindDeviceByPlatformString_RoundTripsExistingDevice()
     {
         using var gameInput = GameInputFactory.Create();
+        var exercised = false;
 
-        var count = 0;
         foreach (var kind in ProbeKinds)
         {
             var enumerated = gameInput.EnumerateDevices(kind);
@@ -44,21 +47,23 @@ public sealed class GameInputFindDeviceByPlatformStringSmoke
 
                 Assert.True(info.DeviceId.AsSpan().SequenceEqual(foundInfo.DeviceId.AsSpan()),
                     "Device identifiers should match when round-tripping through FindDeviceFromPlatformString.");
-                count++;
+                exercised = true;
+                break;
             }
             catch (GameInputException ex) when (IsLookupUnsupported(ex))
             {
-                continue;
             }
             finally
             {
                 foreach (var device in devices) device.Dispose();
             }
-
-            return;
         }
 
-        Console.WriteLine($"Successes: {count}");
+        if (!exercised)
+        {
+            Console.WriteLine("Skipping platform string lookup smoke: no device could be round-tripped.");
+            Skip.If(true, "FindDeviceFromPlatformString could not round-trip any device. Provide hardware with a non-empty PnP path or investigate redistributable support.");
+        }
     }
 
     private static bool IsLookupUnsupported(GameInputException ex)

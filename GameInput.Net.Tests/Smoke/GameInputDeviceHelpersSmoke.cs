@@ -20,11 +20,12 @@ public sealed class GameInputDeviceHelpersSmoke
         GameInputKind.ArcadeStick
     ];
 
-    [WindowsOnlyFact]
+    [WindowsOnlySkippableFact]
     [SupportedOSPlatform("windows")]
     public void GetHapticInfo_WhenAvailable_AllowsMetadataQueries()
     {
         using var gameInput = GameInputFactory.Create();
+        var exercised = false;
 
         foreach (var kind in ProbeKinds)
         {
@@ -38,21 +39,34 @@ public sealed class GameInputDeviceHelpersSmoke
                     _ = info.GetAudioEndpointId();
                     var locations = info.GetLocations();
                     Assert.True(locations.Length <= info.LocationCount);
-                    return;
+                    exercised = true;
+                    break;
                 }
                 catch (GameInputException ex) when (ShouldSkip(ex))
                 {
                     continue;
                 }
             }
+
+            if (exercised)
+            {
+                break;
+            }
+        }
+
+        if (!exercised)
+        {
+            Console.WriteLine("Skipping haptics metadata smoke: no compatible devices detected.");
+            Skip.If(true, "No devices exposed haptic metadata. Connect hardware with haptic support or investigate the redistributable capabilities.");
         }
     }
 
-    [WindowsOnlyFact]
+    [WindowsOnlySkippableFact]
     [SupportedOSPlatform("windows")]
     public void ForceFeedbackHelpers_CreateEffectAndAdjustGain()
     {
         using var gameInput = GameInputFactory.Create();
+        var exercised = false;
 
         foreach (var kind in ProbeKinds)
         {
@@ -88,21 +102,34 @@ public sealed class GameInputDeviceHelpersSmoke
                         candidate.SetRumbleState(default);
                     }
 
-                    return;
+                    exercised = true;
+                    break;
                 }
                 catch (GameInputException ex) when (ShouldSkip(ex))
                 {
                     continue;
                 }
             }
+
+            if (exercised)
+            {
+                break;
+            }
+        }
+
+        if (!exercised)
+        {
+            Console.WriteLine("Skipping force feedback smoke: no FF-capable devices available.");
+            Skip.If(true, "Force feedback helpers were not exercised. Connect a force-feedback capable device and ensure the redistributable exposes motor APIs.");
         }
     }
 
-    [WindowsOnlyFact]
+    [WindowsOnlySkippableFact]
     [SupportedOSPlatform("windows")]
     public void RawDeviceReportHelpers_CreateAndSend()
     {
         using var gameInput = GameInputFactory.Create();
+        var exercised = false;
 
         foreach (var kind in ProbeKinds)
         {
@@ -132,13 +159,25 @@ public sealed class GameInputDeviceHelpersSmoke
                     var payload = reportInfo.Size == 0 ? Array.Empty<byte>() : new byte[reportInfo.Size];
                     report.SetRawData(payload);
                     candidate.SendRawDeviceOutput(report);
-                    return;
+                    exercised = true;
+                    break;
                 }
                 catch (GameInputException ex) when (ShouldSkip(ex))
                 {
                     continue;
                 }
             }
+
+            if (exercised)
+            {
+                break;
+            }
+        }
+
+        if (!exercised)
+        {
+            Console.WriteLine("Skipping raw device report smoke: no writable output reports available.");
+            Skip.If(true, "Raw device report helpers were not exercised. Connect hardware that exposes writable raw output reports.");
         }
     }
 
