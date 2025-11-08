@@ -7,7 +7,7 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <RootNamespace>GameInputDotNet</RootNamespace>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>1.0.0-alpha</Version>
+        <Version>1.0.0</Version>
         <Title>GameInput.Net</Title>
         <Authors>Victoria Beauray Sagady</Authors>
         <Description>Managed wrapper around Microsoft.GameInput v3.0 for Windows 10 &amp; 11.</Description>
