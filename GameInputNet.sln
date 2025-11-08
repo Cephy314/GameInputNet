@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameInput.Net", "GameInput.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameInput.Net.Tests", "GameInput.Net.Tests\GameInput.Net.Tests.csproj", "{ABDA61E5-8A8D-4DF8-BF01-5A6DA92766AC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameInput.Net.Examples", "GameInput.Net.Examples\GameInput.Net.Examples.csproj", "{DEAF088C-5B3A-4475-AF32-53FA247BA6F3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,18 @@ Global
 		{ABDA61E5-8A8D-4DF8-BF01-5A6DA92766AC}.Release|x64.Build.0 = Release|Any CPU
 		{ABDA61E5-8A8D-4DF8-BF01-5A6DA92766AC}.Release|x86.ActiveCfg = Release|Any CPU
 		{ABDA61E5-8A8D-4DF8-BF01-5A6DA92766AC}.Release|x86.Build.0 = Release|Any CPU
+		{DEAF088C-5B3A-4475-AF32-53FA247BA6F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEAF088C-5B3A-4475-AF32-53FA247BA6F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEAF088C-5B3A-4475-AF32-53FA247BA6F3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DEAF088C-5B3A-4475-AF32-53FA247BA6F3}.Debug|x64.Build.0 = Debug|Any CPU
+		{DEAF088C-5B3A-4475-AF32-53FA247BA6F3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DEAF088C-5B3A-4475-AF32-53FA247BA6F3}.Debug|x86.Build.0 = Debug|Any CPU
+		{DEAF088C-5B3A-4475-AF32-53FA247BA6F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEAF088C-5B3A-4475-AF32-53FA247BA6F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEAF088C-5B3A-4475-AF32-53FA247BA6F3}.Release|x64.ActiveCfg = Release|Any CPU
+		{DEAF088C-5B3A-4475-AF32-53FA247BA6F3}.Release|x64.Build.0 = Release|Any CPU
+		{DEAF088C-5B3A-4475-AF32-53FA247BA6F3}.Release|x86.ActiveCfg = Release|Any CPU
+		{DEAF088C-5B3A-4475-AF32-53FA247BA6F3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
