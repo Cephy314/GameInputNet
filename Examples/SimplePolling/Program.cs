@@ -43,13 +43,14 @@ while (true)
         // Get the current state. 
         var state = reading.GetKeyboardState();
 
-        // I
         if (state.Keys.Count == 0)
             continue;
 
         // Report each key that is currently pressed.
         Console.Write("Keys Pressed: ");
-        foreach (var key in state.Keys) Console.Write(key.ScanCode + " ");
+        // Print the name of the keys based on the virtual key byte.
+        foreach (var key in state.Keys)
+            Console.Write($"{(ConsoleKey)key.VirtualKey} ");
         Console.WriteLine();
 
         // We can also use this to end our program when the user hits Escape.
