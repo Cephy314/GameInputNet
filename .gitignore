@@ -53,6 +53,7 @@ bld/
 [Oo]ut/
 [Ll]og/
 [Ll]ogs/
+**/Lib
 
 # Build results on 'Bin' directories
 **/[Bb]in/*

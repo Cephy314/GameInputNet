@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.Versioning;
 using GameInputDotNet.Interop.Enums;
 using GameInputDotNet.Interop.Handles;
