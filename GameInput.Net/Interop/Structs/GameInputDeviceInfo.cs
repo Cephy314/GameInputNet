@@ -142,41 +142,48 @@ public struct GameInputDeviceInfo
         }
     }
 
-    public ReadOnlySpan<GameInputForceFeedbackMotorInfo> GetForceFeedbackMotorInfo()
+    public ReadOnlySpan<GameInputForceFeedbackMotorInfo>
+        GetForceFeedbackMotorInfo()
     {
-        if (ForceFeedbackMotorCount == 0) return ReadOnlySpan<GameInputForceFeedbackMotorInfo>.Empty;
+        if (ForceFeedbackMotorCount == 0)
+            return ReadOnlySpan<GameInputForceFeedbackMotorInfo>.Empty;
 
         unsafe
         {
             return ForceFeedbackMotorInfo is null
                 ? ReadOnlySpan<GameInputForceFeedbackMotorInfo>.Empty
-                : new ReadOnlySpan<GameInputForceFeedbackMotorInfo>(ForceFeedbackMotorInfo,
+                : new ReadOnlySpan<GameInputForceFeedbackMotorInfo>(
+                    ForceFeedbackMotorInfo,
                     checked((int)ForceFeedbackMotorCount));
         }
     }
 
     public ReadOnlySpan<GameInputRawDeviceReportInfo> GetInputReportInfo()
     {
-        if (InputReportCount == 0) return ReadOnlySpan<GameInputRawDeviceReportInfo>.Empty;
+        if (InputReportCount == 0)
+            return ReadOnlySpan<GameInputRawDeviceReportInfo>.Empty;
 
         unsafe
         {
             return InputReportInfo is null
                 ? ReadOnlySpan<GameInputRawDeviceReportInfo>.Empty
-                : new ReadOnlySpan<GameInputRawDeviceReportInfo>(InputReportInfo,
+                : new ReadOnlySpan<GameInputRawDeviceReportInfo>(
+                    InputReportInfo,
                     checked((int)InputReportCount));
         }
     }
 
     public ReadOnlySpan<GameInputRawDeviceReportInfo> GetOutputReportInfo()
     {
-        if (OutputReportCount == 0) return ReadOnlySpan<GameInputRawDeviceReportInfo>.Empty;
+        if (OutputReportCount == 0)
+            return ReadOnlySpan<GameInputRawDeviceReportInfo>.Empty;
 
         unsafe
         {
             return OutputReportInfo is null
                 ? ReadOnlySpan<GameInputRawDeviceReportInfo>.Empty
-                : new ReadOnlySpan<GameInputRawDeviceReportInfo>(OutputReportInfo,
+                : new ReadOnlySpan<GameInputRawDeviceReportInfo>(
+                    OutputReportInfo,
                     checked((int)OutputReportCount));
         }
     }
