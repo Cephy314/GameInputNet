@@ -8,4 +8,8 @@
         <RootNamespace>GameInput.Examples.DeviceEnumeration</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\..\GameInput.Net\GameInput.Net.csproj"/>
+    </ItemGroup>
+
 </Project>
