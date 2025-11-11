@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -18,8 +18,8 @@
         <RepositoryUrl>https://github.com/Cephy314/GameInputNet</RepositoryUrl>
         <PackageTags>GameInput Input GDK Joystick Gamepad Keyboard RacingWheel Haptic ForceFeedback</PackageTags>
         <TargetFramework>net6.0</TargetFramework>
-        <Company />
-        <Product />
+        <Company/>
+        <Product/>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
