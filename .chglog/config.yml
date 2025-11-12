@@ -2,7 +2,7 @@ style: github
 template: CHANGELOG.tpl.md
 info:
   title: Changelog
-  repository_url: https://github.com/Cephy314/UsbVendorsLibrary
+  repository_url: https://github.com/Cephy314/GameInputNet
 options:
   tag_filter_pattern: '^v\d+\.\d+\.\d+$'
   commits:
