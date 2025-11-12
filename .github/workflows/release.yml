@@ -2,7 +2,7 @@ name: 'Release'
 
 on:
   release:
-    types: [published]
+    types: [ published ]
 
 permissions:
   contents: write
@@ -22,28 +22,6 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.event.release.tag_name }}
 
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v4.2.0
-        with:
-          versionSpec: '6.4.x'
-
-      - name: Determine Version
-        id: version_step
-        uses: gittools/actions/gitversion/execute@v4.2.0
-        with:
-          updateAssemblyInfo: true
-
-      - name: Validate release tag
-        env:
-          SEMVER: ${{ steps.version_step.outputs.semVer }}
-          TAG_NAME: ${{ github.event.release.tag_name }}
-        run: |
-          EXPECTED_TAG="v${SEMVER}"
-          if [ "${TAG_NAME}" != "${EXPECTED_TAG}" ] && [ "${TAG_NAME}" != "${SEMVER}" ]; then
-            echo "Release tag ${TAG_NAME} does not match GitVersion output ${SEMVER}" >&2
-            exit 1
-          fi
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
@@ -54,25 +32,18 @@ jobs:
 
       - name: Pack library
         env:
-          PACKAGE_VERSION: ${{ steps.version_step.outputs.semVer }}
-          ASSEMBLY_VERSION: ${{ steps.version_step.outputs.assemblySemVer }}
-          ASSEMBLY_FILE_VERSION: ${{ steps.version_step.outputs.assemblySemFileVer }}
-          INFORMATIONAL_VERSION: ${{ steps.version_step.outputs.informationalVersion }}
+          PACKAGE_VERSION: ${{ github.event.release.tag_name }}
         run: |
           dotnet pack GameInput.Net/GameInput.Net.csproj \
             -c Release \
             /p:Version=${PACKAGE_VERSION} \
-            /p:AssemblyVersion=${ASSEMBLY_VERSION} \
-            /p:FileVersion=${ASSEMBLY_FILE_VERSION} \
-            /p:InformationalVersion="${INFORMATIONAL_VERSION}" \
-            /p:PackageVersion=${PACKAGE_VERSION} \
             /p:ContinuousIntegrationBuild=true \
             --no-restore
 
       - name: Locate package
         id: package_path
         env:
-          VERSION: ${{ steps.version_step.outputs.semVer }}
+          VERSION: ${{ github.event.release.tag_name }}
         run: |
           PACKAGE_PATH="GameInput.Net/bin/Release/GameInput.Net.${VERSION}.nupkg"
           if [ ! -f "${PACKAGE_PATH}" ]; then
@@ -88,13 +59,13 @@ jobs:
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: ${{ steps.package_path.outputs.package_path }}
-          asset_name: GameInput.Net.${{ steps.version_step.outputs.semVer }}.nupkg
+          asset_name: GameInput.Net.${{ github.event.release.tag_name }}.nupkg
           asset_content_type: application/octet-stream
 
       - name: Push to NuGet (optional)
         if: ${{ env.NUGET_API_KEY != '' }}
         env:
-          VERSION: ${{ steps.version_step.outputs.semVer }}
+          VERSION: ${{ github.event.release.tag_name }}
           NUGET_API_KEY: ${{ env.NUGET_API_KEY }}
         run: |
           dotnet nuget push "GameInput.Net/bin/Release/GameInput.Net.${VERSION}.nupkg" \
