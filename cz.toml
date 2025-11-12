@@ -1,11 +1,11 @@
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "1.1.0"
+version = "1.2.0-alpha.0"
 update_changelog_on_bummp = true
 annotated_tag = true
 gpg_sign = true
 version_scheme = "semver2"
-tag_format = "v$major.$minor.$patch$prerelease.$devrelease"
+tag_format = "v$major.$minor.$patch$prerelease"
 breaking_change_exclamation_in_title = true
 changelog_incremental = true
 changelog_merge_prerelease = true
