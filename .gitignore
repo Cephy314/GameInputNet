@@ -437,5 +437,6 @@ FodyWeavers.xsd
 *.md
 !/*/**/*.md
 !README.md
+!CHANGELOG.md
 
 *.backup
