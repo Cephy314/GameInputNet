@@ -174,8 +174,8 @@ public struct GameInputDeviceInfo
     /// <summary>
     ///     Return UTF8 String from pointer.
     /// </summary>
-    /// <param name="pString"></param>
-    /// <param name="maxLength"></param>
+    /// <param name="pString">Pointer to the UTF-8 encoded, null-terminated string buffer.</param>
+    /// <param name="maxLength">Maximum number of bytes to read from the buffer starting at <paramref name="pString" />.</param>
     /// <returns>String at pointer value or String.Empty string</returns>
     private static unsafe string GetUnsafeUTF8String(sbyte* pString, int maxLength)
     {
