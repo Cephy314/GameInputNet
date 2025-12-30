@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using System.Text;
 using GameInputDotNet.Interop.Enums;
 
 namespace GameInputDotNet.Interop.Structs;
@@ -19,6 +20,8 @@ public struct GameInputDeviceInfo
     public GameInputRumbleMotors SupportedRumbleMotors;
     public GameInputSystemButtons SupportedSystemButtons;
     public Guid ContainerId;
+
+    private const int HidPMaxLength = 4092; // Maximum size assumed for HidD_*String functions
 
     private unsafe sbyte* DisplayName;
     private unsafe sbyte* PnpPath;
@@ -46,9 +49,7 @@ public struct GameInputDeviceInfo
     {
         unsafe
         {
-            return DisplayName is null
-                ? null
-                : Marshal.PtrToStringAnsi((nint)DisplayName);
+            return GetUnsafeUTF8String(DisplayName, HidPMaxLength);
         }
     }
 
@@ -56,9 +57,7 @@ public struct GameInputDeviceInfo
     {
         unsafe
         {
-            return PnpPath is null
-                ? null
-                : Marshal.PtrToStringAnsi((nint)PnpPath);
+            return GetUnsafeUTF8String(PnpPath, HidPMaxLength);
         }
     }
 
@@ -66,9 +65,7 @@ public struct GameInputDeviceInfo
     {
         unsafe
         {
-            return KeyboardInfo is null
-                ? null
-                : *KeyboardInfo;
+            return KeyboardInfo is null ? null : *KeyboardInfo;
         }
     }
 
@@ -76,9 +73,7 @@ public struct GameInputDeviceInfo
     {
         unsafe
         {
-            return MouseInfo is null
-                ? null
-                : *MouseInfo;
+            return MouseInfo is null ? null : *MouseInfo;
         }
     }
 
@@ -86,9 +81,7 @@ public struct GameInputDeviceInfo
     {
         unsafe
         {
-            return SensorsInfo is null
-                ? null
-                : *SensorsInfo;
+            return SensorsInfo is null ? null : *SensorsInfo;
         }
     }
 
@@ -96,9 +89,7 @@ public struct GameInputDeviceInfo
     {
         unsafe
         {
-            return ControllerInfo is null
-                ? null
-                : *ControllerInfo;
+            return ControllerInfo is null ? null : *ControllerInfo;
         }
     }
 
@@ -106,9 +97,7 @@ public struct GameInputDeviceInfo
     {
         unsafe
         {
-            return ArcadeStickInfo is null
-                ? null
-                : *ArcadeStickInfo;
+            return ArcadeStickInfo is null ? null : *ArcadeStickInfo;
         }
     }
 
@@ -116,9 +105,7 @@ public struct GameInputDeviceInfo
     {
         unsafe
         {
-            return FlightStickInfo is null
-                ? null
-                : *FlightStickInfo;
+            return FlightStickInfo is null ? null : *FlightStickInfo;
         }
     }
 
@@ -126,9 +113,7 @@ public struct GameInputDeviceInfo
     {
         unsafe
         {
-            return GamepadInfo is null
-                ? null
-                : *GamepadInfo;
+            return GamepadInfo is null ? null : *GamepadInfo;
         }
     }
 
@@ -136,17 +121,16 @@ public struct GameInputDeviceInfo
     {
         unsafe
         {
-            return RacingWheelInfo is null
-                ? null
-                : *RacingWheelInfo;
+            return RacingWheelInfo is null ? null : *RacingWheelInfo;
         }
     }
 
-    public ReadOnlySpan<GameInputForceFeedbackMotorInfo>
-        GetForceFeedbackMotorInfo()
+    public ReadOnlySpan<GameInputForceFeedbackMotorInfo> GetForceFeedbackMotorInfo()
     {
         if (ForceFeedbackMotorCount == 0)
+        {
             return ReadOnlySpan<GameInputForceFeedbackMotorInfo>.Empty;
+        }
 
         unsafe
         {
@@ -161,30 +145,53 @@ public struct GameInputDeviceInfo
     public ReadOnlySpan<GameInputRawDeviceReportInfo> GetInputReportInfo()
     {
         if (InputReportCount == 0)
+        {
             return ReadOnlySpan<GameInputRawDeviceReportInfo>.Empty;
+        }
 
         unsafe
         {
             return InputReportInfo is null
                 ? ReadOnlySpan<GameInputRawDeviceReportInfo>.Empty
-                : new ReadOnlySpan<GameInputRawDeviceReportInfo>(
-                    InputReportInfo,
-                    checked((int)InputReportCount));
+                : new ReadOnlySpan<GameInputRawDeviceReportInfo>(InputReportInfo, checked((int)InputReportCount));
         }
     }
 
     public ReadOnlySpan<GameInputRawDeviceReportInfo> GetOutputReportInfo()
     {
         if (OutputReportCount == 0)
+        {
             return ReadOnlySpan<GameInputRawDeviceReportInfo>.Empty;
+        }
 
         unsafe
         {
             return OutputReportInfo is null
                 ? ReadOnlySpan<GameInputRawDeviceReportInfo>.Empty
-                : new ReadOnlySpan<GameInputRawDeviceReportInfo>(
-                    OutputReportInfo,
-                    checked((int)OutputReportCount));
+                : new ReadOnlySpan<GameInputRawDeviceReportInfo>(OutputReportInfo, checked((int)OutputReportCount));
         }
+    }
+
+    /// <summary>
+    ///     Return UTF8 String from pointer.
+    /// </summary>
+    /// <param name="pString"></param>
+    /// <param name="maxLength"></param>
+    /// <returns>String at pointer value or String.Empty string</returns>
+    private static unsafe string GetUnsafeUTF8String(sbyte* pString, int maxLength)
+    {
+        if (pString == null)
+        {
+            return string.Empty;
+        }
+
+        var buffer = new ReadOnlySpan<byte>((byte*)pString, maxLength);
+        var nullIndex = buffer.IndexOf((byte)0);
+        if (nullIndex == -1)
+        {
+            return string.Empty;
+        }
+
+        return Encoding.UTF8.GetString(buffer[..nullIndex]);
     }
 }
