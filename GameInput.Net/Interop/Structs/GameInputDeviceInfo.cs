@@ -176,12 +176,12 @@ public struct GameInputDeviceInfo
     /// </summary>
     /// <param name="pString">Pointer to the UTF-8 encoded, null-terminated string buffer.</param>
     /// <param name="maxLength">Maximum number of bytes to read from the buffer starting at <paramref name="pString" />.</param>
-    /// <returns>String at pointer value or String.Empty string</returns>
-    private static unsafe string GetUnsafeUtf8String(sbyte* pString, int maxLength)
+    /// <returns>String at pointer or null.</returns>
+    private static unsafe string? GetUnsafeUtf8String(sbyte* pString, int maxLength)
     {
         if (pString == null)
         {
-            return string.Empty;
+            return null;
         }
 
         var length = 0;
@@ -192,10 +192,9 @@ public struct GameInputDeviceInfo
         while (length < maxLength && bytesPtr[length] != 0)
             length++;
 
-        // Handle empty buffer or non-null terminator where expected.
         if (length == 0 || (length == maxLength && bytesPtr[length - 1] != 0))
         {
-            return string.Empty;
+            return null;
         }
 
         return Encoding.UTF8.GetString(bytesPtr, length);
