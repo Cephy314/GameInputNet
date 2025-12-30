@@ -44,7 +44,6 @@ public struct GameInputDeviceInfo
     public uint OutputReportCount;
     private unsafe GameInputRawDeviceReportInfo* OutputReportInfo;
 
-    // @TODO If documentation confirms UTF-8, swap to Encoding.UTF8.GetString.
     public string? GetDisplayName()
     {
         unsafe
