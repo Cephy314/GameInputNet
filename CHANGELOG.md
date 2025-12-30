@@ -1,4 +1,8 @@
-## Unreleased
+## v1.2.1 (2025-12-30)
+
+### Fix
+
+- Added UTF8 handling to display proper names for device info. (#7)
 
 ## v1.0.3 (2025-11-12)
 
