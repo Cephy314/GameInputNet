@@ -21,7 +21,7 @@ public struct GameInputDeviceInfo
     public GameInputSystemButtons SupportedSystemButtons;
     public Guid ContainerId;
 
-    private const int HidPMaxLength = 4092; // Maximum size assumed for HidD_*String functions
+    private const int HidPMaxLength = 256; // Maximum size assumed for HidD_*String functions
 
     private unsafe sbyte* DisplayName;
     private unsafe sbyte* PnpPath;
