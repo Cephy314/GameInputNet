@@ -48,7 +48,7 @@ public struct GameInputDeviceInfo
     {
         unsafe
         {
-            return GetUnsafeUTF8String(DisplayName, HidPMaxLength);
+            return GetUnsafeUtf8String(DisplayName, HidPMaxLength);
         }
     }
 
@@ -56,7 +56,7 @@ public struct GameInputDeviceInfo
     {
         unsafe
         {
-            return GetUnsafeUTF8String(PnpPath, HidPMaxLength);
+            return GetUnsafeUtf8String(PnpPath, HidPMaxLength);
         }
     }
 
@@ -177,7 +177,7 @@ public struct GameInputDeviceInfo
     /// <param name="pString">Pointer to the UTF-8 encoded, null-terminated string buffer.</param>
     /// <param name="maxLength">Maximum number of bytes to read from the buffer starting at <paramref name="pString" />.</param>
     /// <returns>String at pointer value or String.Empty string</returns>
-    private static unsafe string GetUnsafeUTF8String(sbyte* pString, int maxLength)
+    private static unsafe string GetUnsafeUtf8String(sbyte* pString, int maxLength)
     {
         if (pString == null)
         {
