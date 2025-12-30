@@ -32,25 +32,28 @@ jobs:
 
       - name: Pack library
         env:
-          PACKAGE_VERSION: ${{ github.event.release.tag_name }}
+          PACKAGE_TAG: ${{ github.event.release.tag_name }}
         run: |
+          VERSION=${PACKAGE_TAG#v}
           dotnet pack GameInput.Net/GameInput.Net.csproj \
             -c Release \
-            /p:Version=${PACKAGE_VERSION} \
+            /p:Version=${VERSION} \
             /p:ContinuousIntegrationBuild=true \
             --no-restore
 
       - name: Locate package
         id: package_path
         env:
-          VERSION: ${{ github.event.release.tag_name }}
+          PACKAGE_TAG: ${{ github.event.release.tag_name }}
         run: |
+          VERSION=${PACKAGE_TAG#v}
           PACKAGE_PATH="GameInput.Net/bin/Release/GameInput.Net.${VERSION}.nupkg"
           if [ ! -f "${PACKAGE_PATH}" ]; then
             echo "Expected package ${PACKAGE_PATH} was not found." >&2
             exit 1
           fi
           echo "package_path=${PACKAGE_PATH}" >> "${GITHUB_OUTPUT}"
+          echo "package_name=$(basename "${PACKAGE_PATH}")" >> "${GITHUB_OUTPUT}"
 
       - name: Upload package to release
         uses: actions/upload-release-asset@v1
@@ -59,15 +62,16 @@ jobs:
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: ${{ steps.package_path.outputs.package_path }}
-          asset_name: GameInput.Net.${{ github.event.release.tag_name }}.nupkg
+          asset_name: ${{ steps.package_path.outputs.package_name }}
           asset_content_type: application/octet-stream
 
       - name: Push to NuGet (optional)
         if: ${{ env.NUGET_API_KEY != '' }}
         env:
-          VERSION: ${{ github.event.release.tag_name }}
+          PACKAGE_TAG: ${{ github.event.release.tag_name }}
           NUGET_API_KEY: ${{ env.NUGET_API_KEY }}
         run: |
+          VERSION=${PACKAGE_TAG#v}
           dotnet nuget push "GameInput.Net/bin/Release/GameInput.Net.${VERSION}.nupkg" \
             --api-key "${NUGET_API_KEY}" \
             --source https://api.nuget.org/v3/index.json \
