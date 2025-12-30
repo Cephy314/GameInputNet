@@ -1,7 +1,7 @@
 [tool.commitizen]
 name = "cz_conventional_commits"
 version = "1.2.0"
-update_changelog_on_bummp = true
+update_changelog_on_bump = true
 annotated_tag = true
 gpg_sign = true
 version_scheme = "semver2"
