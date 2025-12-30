@@ -184,13 +184,20 @@ public struct GameInputDeviceInfo
             return string.Empty;
         }
 
-        var buffer = new ReadOnlySpan<byte>((byte*)pString, maxLength);
-        var nullIndex = buffer.IndexOf((byte)0);
-        if (nullIndex == -1)
+        var length = 0;
+        var bytesPtr = (byte*)pString;
+
+        // Traverse bytes to find null terminator. Do not overrun max value.
+        // No guarantee we have a buffer of max size.
+        while (length < maxLength && bytesPtr[length] != 0)
+            length++;
+
+        // Handle empty buffer or non-null terminator where expected.
+        if (length == 0 || (length == maxLength && bytesPtr[length - 1] != 0))
         {
             return string.Empty;
         }
 
-        return Encoding.UTF8.GetString(buffer[..nullIndex]);
+        return Encoding.UTF8.GetString(bytesPtr, length);
     }
 }
